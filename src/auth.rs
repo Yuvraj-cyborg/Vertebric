@@ -71,22 +71,17 @@ pub fn get_or_prompt_api_key(provider: &Provider) -> Result<String> {
     }
 
     // 3. Interactive Prompt
-    eprintln!();
-    eprintln!("No API key found for {}.", provider.provider_display());
-    eprintln!(
-        "Set {} in your environment, or enter it now.\n",
-        provider.api_key_env()
-    );
-
-    let prompt_msg = format!("{} API key", provider.provider_display());
+    let prompt_msg = format!("{} API key (input hidden)", provider.provider_display());
     let new_key = Password::new()
         .with_prompt(&prompt_msg)
         .interact()?;
 
+    if new_key.trim().is_empty() {
+        anyhow::bail!("No API key provided for {}", provider.provider_display());
+    }
+
     creds.keys.insert(provider_name.to_string(), new_key.clone());
     save_credentials(&creds)?;
-
-    eprintln!("API key saved.\n");
 
     Ok(new_key)
 }

@@ -21,7 +21,14 @@ use engine::{Engine, EngineResult};
 async fn main() {
     let args = Args::parse();
 
-    let config = match Config::from_args(&args) {
+    // If --model was explicitly provided, skip interactive setup
+    let config = if args.model.is_some() {
+        Config::from_args(&args)
+    } else {
+        Config::from_interactive(&args)
+    };
+
+    let config = match config {
         Ok(c) => c,
         Err(e) => {
             eprintln!("{} {e}", "Error:".red().bold());
