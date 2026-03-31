@@ -48,9 +48,10 @@ impl Engine {
         })
     }
 
-    /// Run the agentic loop for a single user prompt
+    /// Run the agentic loop for a single user prompt.
+    /// Conversation history is preserved across calls; turn counter resets per prompt.
     pub async fn run(&mut self, prompt: &str) -> EngineResult {
-        // Add user message
+        self.turn = 0;
         let user_msg = Message::user(prompt);
         self.messages.push(user_msg.clone());
         let _ = session::append_message(&self.session_dir, &user_msg);
