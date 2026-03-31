@@ -93,7 +93,7 @@ fn draw_chat(f: &mut Frame, app: &mut App, area: Rect) {
     // Active tools
     for tool in app.active_tools.values() {
         text_lines.push(Line::from(vec![
-            Span::styled(format!("🚀 RUNNING TOOL: {}", tool.name), Style::default().fg(Color::Yellow)),
+            Span::styled(format!("RUNNING TOOL: {}", tool.name), Style::default().fg(Color::Yellow)),
         ]));
     }
 
