@@ -2,6 +2,7 @@ use clap::Parser;
 use colored::Colorize;
 
 mod api;
+mod auth;
 mod cli;
 mod config;
 mod context;
@@ -9,6 +10,7 @@ mod cost;
 mod engine;
 mod session;
 mod tools;
+mod tui;
 mod types;
 
 use cli::Args;
@@ -42,7 +44,7 @@ async fn main() {
         format!(
             "vertebric v{} | {} | {}",
             env!("CARGO_PKG_VERSION"),
-            config.provider_display(),
+            config.provider.provider_display(),
             config.model,
         )
         .dimmed()

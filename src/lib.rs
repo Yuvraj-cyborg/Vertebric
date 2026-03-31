@@ -1,4 +1,5 @@
 pub mod api;
+pub mod auth;
 pub mod cli;
 pub mod config;
 pub mod context;
@@ -6,4 +7,5 @@ pub mod cost;
 pub mod engine;
 pub mod session;
 pub mod tools;
+pub mod tui;
 pub mod types;

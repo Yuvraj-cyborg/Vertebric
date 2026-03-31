@@ -45,6 +45,15 @@ impl Provider {
             Self::Custom => "CUSTOM_API_KEY",
         }
     }
+
+    pub fn provider_display(&self) -> &'static str {
+        match self {
+            Self::Claude => "Claude (Anthropic)",
+            Self::OpenAI => "OpenAI",
+            Self::Gemini => "Gemini (Google)",
+            Self::Custom => "Custom API",
+        }
+    }
 }
 
 /// Full runtime configuration built from CLI args + env vars
@@ -80,13 +89,11 @@ impl Config {
         })
         .unwrap_or_else(|_| provider.default_base_url().to_string());
 
-        let api_key = std::env::var(provider.api_key_env()).unwrap_or_default();
-        if api_key.is_empty() && provider != Provider::Custom {
-            anyhow::bail!(
-                "Missing API key. Set {} environment variable.",
-                provider.api_key_env()
-            );
-        }
+        let api_key = if provider == Provider::Custom {
+            std::env::var(provider.api_key_env()).unwrap_or_default()
+        } else {
+            crate::auth::get_or_prompt_api_key(&provider)?
+        };
 
         let cwd = std::env::current_dir()?;
 
@@ -105,12 +112,4 @@ impl Config {
         })
     }
 
-    pub fn provider_display(&self) -> &'static str {
-        match self.provider {
-            Provider::Claude => "Claude (Anthropic)",
-            Provider::OpenAI => "OpenAI",
-            Provider::Gemini => "Gemini (Google)",
-            Provider::Custom => "Custom API",
-        }
-    }
 }
